@@ -12,14 +12,14 @@ resource "aws_s3_bucket" "main" {
 }
 
 
-# Create a folder path variable to be created
+# List of folders to be created
 variable "s3_folders" {
   type        = list(string)
   description = "The list of S3 folders to create"
   default = [
-    "data/customers_database/customers_csv/20211230",
     "temp-dir",
-    "scripts"
+    "scripts",
+    "athena_results"
   ]
 }
 
@@ -33,9 +33,9 @@ resource "aws_s3_object" "directory_structure" {
 }
 
 resource "aws_s3_object" "object" {
-  bucket = aws_s3_bucket.main.bucket
-  key    = "data/customers_database/customers_csv/20211230/customer.csv"
-  source = "../data/customer.csv"
-  etag = filemd5("../data/customer.csv")
+  bucket       = aws_s3_bucket.main.bucket
+  key          = "${local.glue_table_path}/20211230/customer.csv"
+  source       = "../data/customer.csv"
+  etag         = filemd5("../data/customer.csv")
   content_type = "application/csv"
 }
