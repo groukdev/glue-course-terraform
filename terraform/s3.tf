@@ -11,6 +11,7 @@ resource "aws_s3_bucket" "main" {
   )
 }
 
+
 # Create a folder path variable to be created
 variable "s3_folders" {
   type        = list(string)
@@ -29,4 +30,12 @@ resource "aws_s3_object" "directory_structure" {
   bucket       = aws_s3_bucket.main.bucket
   key          = "${each.value}/"
   content_type = "application/x-directory"
+}
+
+resource "aws_s3_object" "object" {
+  bucket = aws_s3_bucket.main.bucket
+  key    = "data/customers_database/customers_csv/20211230/customer.csv"
+  source = "../data/customer.csv"
+  etag = filemd5("../data/customer.csv")
+  content_type = "application/csv"
 }
